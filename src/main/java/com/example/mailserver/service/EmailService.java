@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface EmailService {
     List<Email> getEmailsForUser(String receiver);
+
+    boolean saveEmail(Email email);
 }

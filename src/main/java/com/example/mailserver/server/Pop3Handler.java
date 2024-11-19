@@ -76,11 +76,8 @@ public class Pop3Handler implements Runnable {
                         if (emails != null) {
                             email = emails.get(emailNumber - 1);
                             email.setEmailId(emailNumber);
-                            long emailLength = email.getBodyLength() +5;
-                            out.println("+OK " + emailLength + " octets");
-                            out.println();
+                            out.println("+OK " + email.getBodyLength() + " octets");
                             out.println(email.getBody());
-                            out.println(".");
                         } else {
                             out.println("-ERR No such message, only " + emailService.getEmailsForUser(receiver).size() + " messages in maildrop");
                         }
