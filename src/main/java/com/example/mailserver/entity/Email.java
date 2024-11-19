@@ -9,7 +9,6 @@ public class Email {
     private int emailId;
     private String sender;
     private String receiver;
-    private String subject;
     private String body;
     private Timestamp sentAt;
     private boolean isRead;
@@ -19,11 +18,4 @@ public class Email {
         return body.length();
     }
 
-    public long getSenderLength() {
-        return sender.length();
-    }
-
-    public long getSubjectLength() {
-        return subject.length();
-    }
 }

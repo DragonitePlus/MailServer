@@ -59,13 +59,15 @@ public class MailServerApplication {
     }
 
     private static void startSmtpServer() throws IOException {
+        EmailService emailService = context.getBean(EmailService.class);
+        UserService userService = context.getBean(UserService.class);
         int port = 2525; // SMTP 端口
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("SMTP Server is running on port " + port);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                new Thread(new SmtpHandler(clientSocket)).start();
+                new Thread(new SmtpHandler(clientSocket, emailService, userService)).start();
             }
         }
     }

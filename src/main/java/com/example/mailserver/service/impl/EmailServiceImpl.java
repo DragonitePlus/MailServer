@@ -16,4 +16,9 @@ public class EmailServiceImpl implements EmailService {
     public List<Email> getEmailsForUser(String receiver) {
         return emailMapper.getEmailsByReceiver(receiver);
     }
+
+    @Override
+    public boolean saveEmail(Email email) {
+        return emailMapper.insertEmail(email);
+    }
 }
