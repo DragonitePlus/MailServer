@@ -12,7 +12,7 @@ import java.util.Base64;
 public class TokenUtil {
 
     private static final String SECRET_KEY = "yourSecretKey"; // 请使用更安全的方式管理密钥
-    private static final long EXPIRATION_TIME = 864000000; // 1 day in milliseconds
+    private static final long EXPIRATION_TIME = 864000000; // 10 day in milliseconds
 
     public String generateToken(String username) {
         Date now = new Date();

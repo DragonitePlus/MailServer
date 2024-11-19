@@ -28,4 +28,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(user.getUsername()+"@example.com");
         return userMapper.insertUser(user) > 0;
     }
+
+    @Override
+    public boolean findEmail(String email) {
+    	User user = userMapper.findByEmail(email);
+    	return user != null;
+    }
 }

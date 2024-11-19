@@ -37,7 +37,7 @@ public class Pop3Handler implements Runnable {
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
             out.println("+OK Simple POP3 Server");
             String receiver = "";
-            String password = "";
+            String receiverEmail= "";
             List<Email> emails = null;
             boolean authenticated = false;
             String line;
@@ -50,8 +50,9 @@ public class Pop3Handler implements Runnable {
                     receiver = line.substring(5).trim();
                     out.println("+OK User accepted");
                 } else if (line.startsWith("PASS")) {
-                    password = line.substring(5).trim();
-                    if (userService.loginUser(receiver, password)) {
+                    receiver = line.substring(5).trim();
+                    receiverEmail = receiver + "@example.com";
+                    if (userService.findEmail(receiverEmail)) {
                         authenticated = true;
                         out.println("+OK Password accepted");
                     } else {
@@ -61,8 +62,7 @@ public class Pop3Handler implements Runnable {
                     handleCapa(out);
                 } else if (line.startsWith("STAT")) {
                     if (authenticated) {
-                        receiver = receiver + "@example.com";
-                        emails = emailService.getEmailsForUser(receiver);
+                        emails = emailService.getEmailsForUser(receiverEmail);
                         out.println("+OK " + emails.size() + " " + emails.stream().mapToLong(Email::getBodyLength).sum());
                     } else {
                         out.println("-ERR Not authenticated");
@@ -72,7 +72,7 @@ public class Pop3Handler implements Runnable {
                 } else if (line.startsWith("RETR")) {
                     if (authenticated) {
                         int emailNumber = Integer.parseInt(line.substring(5).trim());
-                        Email email = null;
+                        Email email;
                         if (emails != null) {
                             email = emails.get(emailNumber - 1);
                             email.setEmailId(emailNumber);
