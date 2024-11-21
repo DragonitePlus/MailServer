@@ -18,6 +18,17 @@ public interface UserMapper {
     })
     User findByUsername(String username);
 
+    @Select("SELECT * FROM users WHERE user_id = #{userId}")
+    @Results({
+            @Result(column = "user_id", property = "userId"),
+            @Result(column = "username", property = "username"),
+            @Result(column = "email", property = "email"),
+            @Result(column = "password", property = "password"),
+            @Result(column = "status", property = "status"),
+            @Result(column = "role", property = "role")
+    })
+    User findByUserId(Integer userId);
+
     @Select("SELECT * FROM users WHERE email = #{email}")
     User findByEmail(String email);
 
@@ -35,4 +46,10 @@ public interface UserMapper {
             @Result(column = "role", property = "role")
     })
     List<User> selectAll();
+
+    @Update("UPDATE users SET username = #{username}, email = #{email}, status = #{status}, role = #{role} WHERE user_id = #{userId}")
+    boolean updateUser(User user);
+
+    @Delete("DELETE FROM users WHERE username = #{username}")
+    boolean deleteById(String username);
 }

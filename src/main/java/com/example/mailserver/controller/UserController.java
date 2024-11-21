@@ -47,4 +47,63 @@ public class UserController {
             return ResponseEntity.status(400).body(new Response("Registration failed"));
         }
     }
+
+    @PostMapping("/setUser")
+    public ResponseEntity<?> setUser(@RequestBody String jsonString) {
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        if (userService.updateUserRole(username, "user")) {
+            return ResponseEntity.ok().body(new Response("Role updated successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new Response("Role update failed"));
+        }
+    }
+
+    @PostMapping("/setAdmin")
+    public ResponseEntity<?> setAdmin(@RequestBody String jsonString) {
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        if (userService.updateUserRole(username, "admin")) {
+            return ResponseEntity.ok().body(new Response("Role updated successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new Response("Role update failed"));
+        }
+    }
+
+    @PostMapping("/ban")
+    public ResponseEntity<?> banUser(@RequestBody String jsonString) {
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        if (userService.updateUserStatus(username, "banned")) {
+            return ResponseEntity.ok().body(new Response("Status updated successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new Response("Status update failed"));
+        }
+    }
+
+    @PostMapping("/activate")
+    public ResponseEntity<?> activateUser(@RequestBody String jsonString) {
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        if (userService.updateUserStatus(username, "active")) {
+            return ResponseEntity.ok().body(new Response("Status updated successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new Response("Status update failed"));
+        }
+    }
+
+    @PostMapping("/updateDetails")
+    public ResponseEntity<?> updateUserDetails(@RequestBody User user) {
+        if (userService.updateUser(user)) {
+            return ResponseEntity.ok().body(new Response("User updated successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new Response("User update failed"));
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteUser(@RequestBody String jsonString) {
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        if (userService.deleteUser(username)) {
+            return ResponseEntity.ok().body(new Response("User deleted successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new Response("User deletion failed"));
+        }
+    }
 }

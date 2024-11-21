@@ -11,4 +11,12 @@ public interface UserService {
     boolean registerUser(User user);
     boolean findByEmail(String username);
     String getUserRole(String username);
+
+    boolean updateUserStatus(String username, String status);
+
+    boolean updateUserRole(String username, String role);
+
+    boolean updateUser(User user);
+
+    boolean deleteUser(String username);
 }

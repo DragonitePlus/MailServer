@@ -45,4 +45,36 @@ public class UserServiceImpl implements UserService {
     public String getUserRole(String username){
         return userMapper.findByUsername(username).getRole();
     }
+
+    @Override
+    public boolean updateUserStatus(String username, String status) {
+        User user = userMapper.findByUsername(username);
+        user.setStatus(status);
+        return userMapper.updateUser(user);
+    }
+
+    @Override
+    public boolean updateUserRole(String username, String role) {
+        User user = userMapper.findByUsername(username);
+        user.setRole(role);
+        return userMapper.updateUser(user);
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        User selectedUser = userMapper.findByUserId(user.getUserId());
+        if (selectedUser != null) {
+            selectedUser.setUsername(user.getUsername());
+            selectedUser.setEmail(user.getEmail());
+            selectedUser.setStatus(user.getStatus());
+            selectedUser.setRole(user.getRole());
+            return userMapper.updateUser(user);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteUser(String username) {
+        return userMapper.deleteById(username);
+    }
 }
