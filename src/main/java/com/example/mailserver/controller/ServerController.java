@@ -24,7 +24,7 @@ public class ServerController {
     public ResponseEntity<?> getPorts() {
         Integer pop3Port = serverManager.getPop3Port();
         Integer smtpPort = serverManager.getSmtpPort();
-        String domain = "localhost";
+        String domain = "10.0.2.2";
         return ResponseEntity.ok("{\"pop3Port\": " + pop3Port + ", \"smtpPort\": " + smtpPort + ", \"domain\": \"" + domain + "\"}");
     }
 
