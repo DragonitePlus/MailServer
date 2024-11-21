@@ -3,6 +3,7 @@ package com.example.mailserver;
 import com.example.mailserver.server.Pop3Handler;
 import com.example.mailserver.server.SmtpHandler;
 import com.example.mailserver.service.EmailService;
+import com.example.mailserver.service.LogService;
 import com.example.mailserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,9 @@ public class ServerManager {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LogService logService;
 
     private ServerSocket pop3Socket;
     private ServerSocket smtpSocket;
@@ -48,7 +52,7 @@ public class ServerManager {
                 System.out.println("POP3 Server started on port " + pop3Port);
                 while (running) {
                     Socket clientSocket = pop3Socket.accept();
-                    new Thread(new Pop3Handler(clientSocket, emailService, userService)).start();
+                    new Thread(new Pop3Handler(clientSocket, emailService, userService, logService)).start();
                 }
             } catch (IOException e) {
                 if (running) {
@@ -88,7 +92,7 @@ public class ServerManager {
                 System.out.println("SMTP Server started on port " + smtpPort);
                 while (running) {
                     Socket clientSocket = smtpSocket.accept();
-                    new Thread(new SmtpHandler(clientSocket, emailService, userService)).start();
+                    new Thread(new SmtpHandler(clientSocket, emailService, userService, logService)).start();
                 }
             } catch (IOException e) {
                 if (running) {

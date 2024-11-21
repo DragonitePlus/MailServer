@@ -1,7 +1,9 @@
 package com.example.mailserver.server;
 
 import com.example.mailserver.entity.Email;
+import com.example.mailserver.entity.Log;
 import com.example.mailserver.service.EmailService;
+import com.example.mailserver.service.LogService;
 import com.example.mailserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,16 +21,21 @@ public class SmtpHandler implements Runnable {
     @Autowired
     private final UserService userService;
 
-    public SmtpHandler(Socket clientSocket, EmailService emailService, UserService userService) {
+    @Autowired
+    private final LogService logService;
+
+    public SmtpHandler(Socket clientSocket, EmailService emailService, UserService userService, LogService logService) {
         this.clientSocket = clientSocket;
         this.emailService = emailService;
         this.userService = userService;
+        this.logService = logService;
     }
 
     @Autowired
-    public SmtpHandler(EmailService emailService, UserService userService) {
+    public SmtpHandler(EmailService emailService, UserService userService, LogService logService) {
         this.emailService = emailService;
         this.userService = userService;
+        this.logService = logService;
     }
 
 
@@ -37,11 +44,13 @@ public class SmtpHandler implements Runnable {
     try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
          PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
         out.println("220 Simple SMTP Server");
+        Log log = new Log();
+        log.setType("SMTP");
         String line;
         Email email = new Email();
         while ((line = in.readLine()) != null) {
             System.out.println("Received: " + line);
-
+            log.setContent(log.getContent()+"\n"+line);
             if (line.equalsIgnoreCase("QUIT")) {
                 out.println("221 Bye");
                 break;
@@ -78,6 +87,7 @@ public class SmtpHandler implements Runnable {
             }
         }
         emailService.saveEmail(email);
+        logService.insertLog(log);
     } catch (IOException e) {
         e.printStackTrace();
     }

@@ -1,7 +1,9 @@
 package com.example.mailserver.server;
 
 import com.example.mailserver.entity.Email;
+import com.example.mailserver.entity.Log;
 import com.example.mailserver.service.EmailService;
+import com.example.mailserver.service.LogService;
 import com.example.mailserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,21 +22,29 @@ public class Pop3Handler implements Runnable {
     private final UserService userService;
 
     @Autowired
-    public Pop3Handler(EmailService emailService, UserService userService) {
+    private final LogService logService;
+
+    @Autowired
+    public Pop3Handler(EmailService emailService, UserService userService, LogService logService) {
         this.emailService = emailService;
         this.userService = userService;
+        this.logService = logService;
     }
 
-    public Pop3Handler(Socket clientSocket, EmailService emailService, UserService userService) {
+    public Pop3Handler(Socket clientSocket, EmailService emailService, UserService userService, LogService logService) {
         this.clientSocket = clientSocket;
         this.emailService = emailService;
         this.userService = userService;
+        this.logService = logService;
     }
 
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+            Log log = new Log();
+            log.setType("POP3");
+            log.setContent("");
             out.println("+OK Simple POP3 Server");
             String receiver = "";
             String receiverEmail= "";
@@ -43,6 +53,7 @@ public class Pop3Handler implements Runnable {
             String line;
             while ((line = in.readLine()) != null) {
                 System.out.println("Received: " + line);
+                log.setContent(log.getContent()+line+"\n");
                 if (line.equalsIgnoreCase("QUIT")) {
                     out.println("+OK Bye");
                     break;
@@ -106,6 +117,7 @@ public class Pop3Handler implements Runnable {
                     out.println("+OK Command OK");
                 }
             }
+            logService.insertLog(log);
         } catch (IOException e) {
             e.printStackTrace();
         }
