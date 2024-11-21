@@ -52,7 +52,7 @@ public class Pop3Handler implements Runnable {
                 } else if (line.startsWith("PASS")) {
                     receiver = line.substring(5).trim();
                     receiverEmail = receiver + "@example.com";
-                    if (userService.findEmail(receiverEmail)) {
+                    if (userService.findByEmail(receiverEmail)) {
                         authenticated = true;
                         out.println("+OK Password accepted");
                     } else {
@@ -84,7 +84,25 @@ public class Pop3Handler implements Runnable {
                     } else {
                         out.println("-ERR Not authenticated");
                     }
-                } else {
+                }else if (line.startsWith("DELE")) {
+                    if (authenticated) {
+                        int emailNumber = Integer.parseInt(line.substring(5).trim());
+                        Email email;
+                        if (emails != null) {
+                            email = emails.get(emailNumber - 1);
+                            int emailId = email.getEmailId();
+                            emails.remove(emailNumber - 1);
+                            System.out.println("Deleting email with ID: " + emailId);
+                            emailService.deleteEmail(emailId);
+                            out.println("+OK Command OK");
+                        } else {
+                            out.println("-ERR No such message, only " + emailService.getEmailsForUser(receiver).size() + " messages in maildrop");
+                        }
+                    } else {
+                        out.println("-ERR Not authenticated");
+                    }
+                }
+                else {
                     out.println("+OK Command OK");
                 }
             }

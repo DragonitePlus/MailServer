@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -14,24 +16,33 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
+    public List<User> selectAll() {
+        return userMapper.selectAll();
+    }
+
+    @Override
     public boolean loginUser(String username, String password) {
         User user = userMapper.findByUsername(username);
-        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            return true;
-        }
-        return false;
+        return user != null && user.getStatus().equals("active") && BCrypt.checkpw(password, user.getPassword());
     }
 
     @Override
     public boolean registerUser(User user) {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         user.setEmail(user.getUsername()+"@example.com");
+        user.setStatus("active");
+        user.setRole("user");
         return userMapper.insertUser(user) > 0;
     }
 
     @Override
-    public boolean findEmail(String email) {
+    public boolean findByEmail(String email) {
     	User user = userMapper.findByEmail(email);
     	return user != null;
+    }
+
+    @Override
+    public String getUserRole(String username){
+        return userMapper.findByUsername(username).getRole();
     }
 }

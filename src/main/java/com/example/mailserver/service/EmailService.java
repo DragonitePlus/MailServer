@@ -7,4 +7,6 @@ public interface EmailService {
     List<Email> getEmailsForUser(String receiver);
 
     boolean saveEmail(Email email);
+
+    boolean deleteEmail(int emailId);
 }

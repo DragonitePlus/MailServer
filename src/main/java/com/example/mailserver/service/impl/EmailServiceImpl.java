@@ -21,4 +21,9 @@ public class EmailServiceImpl implements EmailService {
     public boolean saveEmail(Email email) {
         return emailMapper.insertEmail(email);
     }
+
+    @Override
+    public boolean deleteEmail(int emailId) {
+        return emailMapper.deleteById(emailId);
+    }
 }
