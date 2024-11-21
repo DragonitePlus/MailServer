@@ -27,6 +27,17 @@ public class UserController {
         return ResponseEntity.ok().body(jsonParserUtil.toJsonFromEntityList(userService.selectAll()));
     }
 
+    @PostMapping("/selectByUsername")
+    public ResponseEntity<?> selectByUsername(@RequestBody String jsonString) {
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        User user = userService.selectByUsername(username);
+        if (user != null) {
+            return ResponseEntity.ok().body(jsonParserUtil.toJsonFromEntity(user));
+        } else {
+            return ResponseEntity.status(404).body(new Response("User not found"));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         boolean success = userService.loginUser(user.getUsername(), user.getPassword());
@@ -89,11 +100,23 @@ public class UserController {
     }
 
     @PostMapping("/updateDetails")
-    public ResponseEntity<?> updateUserDetails(@RequestBody User user) {
+    public ResponseEntity<?> updateUserDetails(@RequestBody String jsonString) {
+        System.out.println(jsonString);
+        User user = new User();
+        int userId = jsonParserUtil.parseJsonInt(jsonString, "userId");
+        String username = jsonParserUtil.parseJsonString(jsonString, "username");
+        String email = jsonParserUtil.parseJsonString(jsonString, "email");
+        String role = jsonParserUtil.parseJsonString(jsonString, "role");
+        String status = jsonParserUtil.parseJsonString(jsonString, "status");
+        user.setUserId(userId);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setRole(role);
+        user.setStatus(status);
         if (userService.updateUser(user)) {
-            return ResponseEntity.ok().body(new Response("User updated successfully"));
+            return ResponseEntity.ok().body("User updated successfully");
         } else {
-            return ResponseEntity.status(400).body(new Response("User update failed"));
+            return ResponseEntity.status(400).body("User update failed");
         }
     }
 
@@ -101,9 +124,9 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@RequestBody String jsonString) {
         String username = jsonParserUtil.parseJsonString(jsonString, "username");
         if (userService.deleteUser(username)) {
-            return ResponseEntity.ok().body(new Response("User deleted successfully"));
+            return ResponseEntity.ok().body("User deleted successfully");
         } else {
-            return ResponseEntity.status(400).body(new Response("User deletion failed"));
+            return ResponseEntity.status(400).body("User deletion failed");
         }
     }
 }

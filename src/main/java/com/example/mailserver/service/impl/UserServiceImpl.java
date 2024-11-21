@@ -21,6 +21,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User selectByUsername(String username){
+        return userMapper.findByUsername(username);
+    }
+
+    @Override
     public boolean loginUser(String username, String password) {
         User user = userMapper.findByUsername(username);
         return user != null && user.getStatus().equals("active") && BCrypt.checkpw(password, user.getPassword());

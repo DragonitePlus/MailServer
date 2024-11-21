@@ -7,6 +7,8 @@ import java.util.List;
 public interface UserService {
     List<User> selectAll();
 
+    User selectByUsername(String username);
+
     boolean loginUser(String username, String password);
     boolean registerUser(User user);
     boolean findByEmail(String username);
