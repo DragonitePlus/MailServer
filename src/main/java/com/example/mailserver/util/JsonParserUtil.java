@@ -84,6 +84,7 @@ public class JsonParserUtil {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.registerModule(new JavaTimeModule());  // 注册 JavaTimeModule
+      objectMapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
       objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
       // 将对象转换为JSON字符串
       return objectMapper.writeValueAsString(entity);
@@ -105,6 +106,7 @@ public class JsonParserUtil {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.registerModule(new JavaTimeModule());  // 注册 JavaTimeModule
+      objectMapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
       objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
       // 将对象列表转换为JSON字符串
       return objectMapper.writeValueAsString(entityList);

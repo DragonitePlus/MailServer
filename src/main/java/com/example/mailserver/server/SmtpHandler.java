@@ -50,7 +50,7 @@ public class SmtpHandler implements Runnable {
         Email email = new Email();
         while ((line = in.readLine()) != null) {
             System.out.println("Received: " + line);
-            log.setContent(log.getContent()+"\n"+line);
+            log.setContent(log.getContent()+line+"\n");
             if (line.equalsIgnoreCase("QUIT")) {
                 out.println("221 Bye");
                 break;
